@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div class="container-div">
+
+    <div class="page-header">
+        <h2>Welcome</h2>
+    </div>
+  
+    <p>
+        Welcome to SuperVisor Monitor!
+    </p>
+    
+    {% if not session.logged_in %}
+	    <h4>
+	      Please <a href="{{ url_for('login') }}">Sign in</a>
+	    </h4>
+    {% endif %}
+    
+</div>
+
+{% endblock %}
