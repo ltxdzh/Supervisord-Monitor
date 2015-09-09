@@ -11,7 +11,8 @@ insert into users (username, password) values ("admin", "123");
 create table hosts (
   id integer primary key autoincrement,
   host_ip text not null,
-  host_name text not null,
+  host_port text not null,
+  host_name text,
   auth_user text,
   auth_pwd	text
 );

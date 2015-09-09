@@ -49,17 +49,42 @@ class DataBase(object):
     
         if kwargs:
             placeholder = [r'%s=(?)'] * len(kwargs)            
-            where_condition = (" where " + " and ".join(placeholder)) %tuple(kwargs.keys())
+            where_condition = (" where " + 
+                               " and ".join(placeholder)) %tuple(kwargs.keys())
             
         else:
             where_condition = ""
             
-        sql_stat = "select {columns} from {table}{where}".format(columns=args, table=table, where=where_condition)
+        sql_stat = ("select {columns} from " + 
+                    "{table}{where}").format(columns=args,
+                                             table=table,
+                                             where=where_condition)
         cur = self.db.execute(sql_stat, kwargs.values())
         
         result = cur.fetchall()
         
-        print result
-        
         return result
+    
+    
+    def insert_row(self, table, **kwargs):
+        
+        if not kwargs:
+            return None
+        
+        placeholder = ('?', ) * len(kwargs)            
+        value_placeholder = "(" + ', '.join(placeholder) + ")"
+        columns = "(" + ', '.join(kwargs.keys()) + ")"
+        
+        sql_stat = ("insert into {table} {columns} " +
+                    "values {value}").format(table=table,
+                                            columns=columns,
+                                            value=value_placeholder)
+        
+        print sql_stat
+        print kwargs.values()
+        
+        self.db.execute(sql_stat, kwargs.values())
+        self.db.commit()
+        
+        return True
     

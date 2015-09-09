@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+
+{% block title %}Hosts{% endblock %}
+
+{% block content %}
+    
+<div class="container-div">
+
+    <div class="page-header">
+        <h2>Hosts</h2>
+    </div>
+  
+
+    {% if not session.username %}
+    <p>
+        Please <a href="{{ url_for('sign_in') }}">Sign in</a>
+    </p>
+    
+    {% else %}
+    
+    {% if hosts %}
+    
+        <table class="table-hover table-striped">
+            <thead>
+            <tr>
+              <th width="10%">#</th>
+              <th width="30%">Host</th>
+              <th width="30%">URL</th>
+              <th width="30%">Options</th>
+            </tr>
+            </thead>
+            
+            <tbody>
+            {% for host in hosts %}
+              
+              <tr class="active">
+                <th scope="row" width="10%" align="center">{{ loop.index }}</th>
+                <td width="30%" align="center">
+                  {{ host.host_name }}
+                </td>
+                
+                <td width="30%" align="center">
+                  <a href="http://{{ host.host_ip }}:{{ host.host_port }}"
+                     target="_blank">
+                    {{ host.host_ip }}:{{ host.host_port }}
+                  </a>
+                </td>
+                
+                <form id="{{ host.id }}" method="post">
+                
+                <input type="hidden" name="id" value="{{ host.id }}">
+
+                <td width="30%" align="center">
+                  <button id="alter_{{ host.id }}" type="button"
+                          class="btn btn-sm btn-success"
+                          onclick="handleEntry('{{ host.id }}', 'alter')">
+                          &nbsp;alter&nbsp;
+                  </button>
+                  <button id="delete_{{ host.id }}" type="button"
+                          class="btn btn-sm btn-danger"
+                          onclick="handleEntry('{{ host.id }}', 'delete')">
+                          delete
+                  </button>
+                </td>
+                
+                </form>
+                
+              </tr>
+              
+            {% endfor %}
+            
+            </tbody>
+            
+        </table>
+        
+    {% else %}
+        <p>Unbelievable.  No entries here so far</p>
+    
+    {% endif %}
+
+{% endif %}
+    
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript">
+
+function handleEntry(form_id, act) {
+    
+    document.getElementById(act + "_" + form_id).blur();
+    
+    var form_obj = document.getElementById(form_id);
+    var isconfirmed = window.confirm("do you really want to " + act + " entry " + form_id);
+    
+    if (isconfirmed == true) {
+        
+        if (act == "delete") {
+            
+            form_obj.action="#";
+            form_obj.submit();
+            
+        } else if (act == "alter") {
+            
+            form_obj.action="#";
+            form_obj.submit();
+        }
+    }
+}
+
+</script>
+
+{% endblock %}
