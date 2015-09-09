@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//monitor/__init__.py=utf-8
+encoding//monitor/db.py=utf-8
+encoding//monitor/rpc_server.py=utf-8
+encoding//monitor/runserver.py=utf-8
+encoding//monitor/views.py=utf-8

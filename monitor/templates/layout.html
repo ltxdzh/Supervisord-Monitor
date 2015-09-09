@@ -1,0 +1,103 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+
+{{super()}}
+
+<link rel="stylesheet"
+  href="{{ url_for('static', filename='style.css') }}">
+
+{% endblock %}
+
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+
+
+{% block navbar %}
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+
+  <div class="container">
+
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+
+      <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target="#sv-navbar-collapse"
+              aria-expanded="false">
+
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+
+      </button>
+
+      <a class="navbar-brand" href="#">SV Monitor</a>
+
+    </div>
+
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="sv-navbar-collapse">
+
+      <ul class="nav navbar-nav">
+
+        {% for link in [{"title": "Home", "url": "/"},
+                        {"title": "Hosts", "url": "/show_hosts"},
+                        {"title": "Itmes", "url": "/show_items"},
+                        {"title": "Help", "url": "#"}]
+        %}
+        
+            {% if link.title == self.title() %}
+            
+              <li class="active">
+                <a href="{{link.url}}">
+                  {{link.title }}<span class="sr-only">(current)</span>
+                </a>
+              </li>
+            
+            {% else %}
+              <li><a href="{{link.url}}">{{ link.title }}</a></li>
+            
+            {% endif %}
+
+        {% endfor %}
+
+      </ul>
+
+      <div class="navbar-right">
+
+        {% if not session.username %}
+        
+          <a class="btn btn-info navbar-btn" role="button"
+             href="{{ url_for('sign_in') }}">Sign in
+          </a>
+          
+        {% else %}
+        
+          <p class="navbar-text">
+            Signed in as 
+            <a href="#" class="navbar-link">{{session.username }}</a>
+          </p>
+
+          <a class="btn btn-primary navbar-btn" role="button"
+             href="{{ url_for('add_host') }}">add host
+          </a>
+          <a class="btn btn-success navbar-btn" role="button"
+             href="{{ url_for('sign_out') }}">Sign out
+          </a>
+        
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</nav>
+
+{% endblock %}
