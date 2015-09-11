@@ -1,38 +1,38 @@
 {% extends "layout.html" %}
 
-{% block title %}Add Host{% endblock %}
+{% block title %}Alter server{% endblock %}
 
-{% block content %}
 
-<div class="container-div">
+{% block content_header %}Alter server{% endblock %}
 
-  <div class="page-header">
-      <h1>Add Host</h1>
-  </div>
-  
+{% block content_body %}
+
   {% if session.username %}
-    
+  
     <div class="form-div">
-      <form action="{{ url_for('add_host') }}" method="post">
+    
+      <form action="{{ url_for('alter_server') }}" method="post">
+      
+      <input type="hidden" name="id" value="{{ server.id }}">
 
       <div class="form-group">
         <label for="ip">IP</label>
-        <input type="text" class="form-control" id="ip" name="ip" placeholder="Host IP">
+        <input type="text" class="form-control" id="ip" name="ip" value="{{ server.server_ip }}">
       </div>
       
       <div class="form-group">
         <label for="port">Port</label>
-        <input type="text" class="form-control" id="port" name="port" placeholder="Host Port">
+        <input type="text" class="form-control" id="port" name="port" value="{{ server.server_port }}">
       </div>
       
       <div class="form-group">
         <label for="auth_user">Auth User</label>
-        <input type="text" class="form-control" id="auth_user" name="auth_user" placeholder="Auth User">
+        <input type="text" class="form-control" id="auth_user" name="auth_user" value="{{ server.auth_user }}">
       </div>
       
       <div class="form-group">
         <label for="auth_pwd">Auth Password</label>
-        <input type="password" class="form-control" id="auth_pwd" name="auth_pwd" placeholder="Auth Password">
+        <input type="password" class="form-control" id="auth_pwd" name="auth_pwd" value="{{ server.auth_pwd }}">
       </div>
       
       <button type="submit" class="btn btn-success">Submit</button>
@@ -43,7 +43,5 @@
     </div>
     
   {% endif %}
-
-</div>
 
 {% endblock %}

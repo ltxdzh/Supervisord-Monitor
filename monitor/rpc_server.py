@@ -16,23 +16,30 @@ class RPCServer():
     '''
 
 
-    def __init__(self, host, port, username=None, password=None):
+    def __init__(self, server):
         '''
         Constructor
         '''
         
-        if re.match("^\d+\.\d+\.\d+\.\d+$", host):
-            self.hostname = socket.gethostbyaddr(host)
-        else:
-            self.hostname = host
+        server_ip = server["server_ip"]
+        server_port = str(server["server_port"])
+        auth_user = server["auth_user"]
+        auth_pwd = server["auth_pwd"]
         
-        if username and password:
-            self.rpc_url = "http://%s:%s@%s:%s" %(username, password, host, port)
+    
+        if auth_user and auth_pwd:
+            self.rpc_url = "http://%s:%s@%s:%s" %(auth_user, auth_pwd, server_ip, server_port)
         else:
-            self.rpc_url = "http://%s:%s" %(host, port)
+            self.rpc_url = "http://%s:%s" %(server_ip, server_port)
             
         self.server = xmlrpclib.Server(self.rpc_url)
         
+        
+#         if re.match("^\d+\.\d+\.\d+\.\d+$", server_ip):
+#             self.hostname = self.get_system_info().get("hostname", None) or server_ip
+#         else:
+#             self.hostname = server_ip
+    
     
     # Supervisord Status and Control
     def get_supervisord_state(self):

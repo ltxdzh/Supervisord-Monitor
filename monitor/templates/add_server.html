@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Server{% endblock %}
+
+
+{% block content_header %}Add Server{% endblock %}
+
+{% block content_body %}
+
+{% if session.username %}
+  
+  <div class="form-div">
+    <form action="{{ url_for('add_server') }}" method="post">
+
+    <div class="form-group">
+      <label for="ip">IP</label>
+      <input type="text" class="form-control" id="ip" name="ip" placeholder="Server IP">
+    </div>
+    
+    <div class="form-group">
+      <label for="port">Port</label>
+      <input type="text" class="form-control" id="port" name="port" placeholder="Server Port">
+    </div>
+    
+    <div class="form-group">
+      <label for="auth_user">Auth User</label>
+      <input type="text" class="form-control" id="auth_user" name="auth_user" placeholder="Auth User">
+    </div>
+    
+    <div class="form-group">
+      <label for="auth_pwd">Auth Password</label>
+      <input type="password" class="form-control" id="auth_pwd" name="auth_pwd" placeholder="Auth Password">
+    </div>
+    
+    <button type="submit" class="btn btn-success">Submit</button>
+    <button type="reset" class="btn btn-primary">Reset</button>
+        
+    </form>
+    
+  </div>
+    
+{% endif %}
+
+{% endblock %}

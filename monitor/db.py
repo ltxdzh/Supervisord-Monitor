@@ -49,16 +49,15 @@ class DataBase(object):
     
         if kwargs:
             placeholder = [r'%s=(?)'] * len(kwargs)            
-            where_condition = (" where " + 
+            where_stat = (" where " + 
                                " and ".join(placeholder)) %tuple(kwargs.keys())
-            
         else:
-            where_condition = ""
+            where_stat = ""
             
         sql_stat = ("select {columns} from " + 
                     "{table}{where}").format(columns=args,
                                              table=table,
-                                             where=where_condition)
+                                             where=where_stat)
         cur = self.db.execute(sql_stat, kwargs.values())
         
         result = cur.fetchall()
@@ -80,11 +79,55 @@ class DataBase(object):
                                             columns=columns,
                                             value=value_placeholder)
         
+        self.db.execute(sql_stat, kwargs.values())
+        self.db.commit()
+        
+        return True
+    
+    
+    def update_row(self, table, where_dict, **kwargs):
+        
+        if not kwargs:
+            return None
+        
+        placeholder = [r'%s=(?)'] * len(kwargs)            
+        set_stat = (", ".join(placeholder)) %tuple(kwargs.keys())
+            
+        placeholder = [r'%s=(?)'] * len(where_dict)            
+        where_stat = (" where " + 
+                      " and ".join(placeholder)) %tuple(where_dict.keys())
+        
+        sql_stat = ("update {table} set {set_stat} " +
+                    "{where}").format(table=table,
+                                      set_stat=set_stat,
+                                      where=where_stat)
+        
         print sql_stat
         print kwargs.values()
+        print where_dict.values()
+        
+        self.db.execute(sql_stat, kwargs.values() + where_dict.values())
+        self.db.commit()
+        
+        return True
+    
+    
+    def delete_row(self, table, **kwargs):
+        
+        if kwargs:
+            placeholder = [r'%s=(?)'] * len(kwargs)            
+            where_stat = (" where " + 
+                          " and ".join(placeholder)) %tuple(kwargs.keys())
+        else:
+            return None
+
+        sql_stat = ("delete from {table}" +
+                    "{where}").format(table=table,
+                                      where=where_stat)
         
         self.db.execute(sql_stat, kwargs.values())
         self.db.commit()
         
         return True
+    
     

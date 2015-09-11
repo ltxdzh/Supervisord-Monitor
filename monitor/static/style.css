@@ -24,7 +24,7 @@ h2              { font-size: 1.2em; }
   
 body { padding-top: 70px; margin: auto; width:70%; }
 
-.btn { margin-left: 10px; }
+.after-btn { margin-left: 8px; }
 
 .container-div {
 	width: 75%;
@@ -54,14 +54,68 @@ body { padding-top: 70px; margin: auto; width:70%; }
   border-bottom: 2px groove #c0c0c0;
 }
 
-tr {
-  display: table-row;
-  vertical-align: inherit;
-  border-color: inherit;
-  height: 40px;
+table {
+	table-layout: fixed;
+	text-overflow: ellipsis;
+	margin: auto;
+	border-collapse: collapse;
 }
 
-input { max-width: 200px; }
-table { table-layout: fixed; text-overflow: ellipsis; margin: auto; }
-th { text-align: center; vertical-align: middle; }
-td { vertical-align: middle; padding: 10px; }
+tr {
+	text-align: center;
+	vertical-align: middle;
+	display: table-row;
+}
+
+/* 
+tr:nth-child(odd) {
+	background:#eeeff2;
+}
+
+tr:nth-child(even) {
+	background:#dfe1e7;
+}
+ */
+
+thead tr {
+	background:#f0f0f0;
+}
+
+tbody tr:nth-child(6n+1) {
+	background:#fff;
+}
+
+tbody tr:nth-child(6n+2) {
+	background: #DFF0D8;
+}
+
+tbody tr:nth-child(6n+3) {
+	background:#fff;
+}
+
+tbody tr:nth-child(6n+4) {
+	background: #D9EDF7;
+}
+
+tbody tr:nth-child(6n+5) {
+	background:#fff;
+}
+
+tbody tr:nth-child(6n+6) {
+	background: #FCF8E3;
+}
+
+tbody th, td {
+	padding: 8px;
+ 	border: solid #fff;
+	border-width: 1px 0px;
+}
+
+th {
+	padding: 12px 8px;
+}
+
+input {
+	max-width: 200px;
+}
+

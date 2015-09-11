@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block title %}Servers{% endblock %}
+
+
+{% block content_header %}Servers{% endblock %}
+
+{% block content_body %}
+
+  {% if session.username %}
+  
+    {% if servers %}
+    
+      <table class="table-hover">
+        <thead>
+          <tr>
+            <th width="7%" align="left">#</th>
+            <th width="10%" align="left">State</th>
+            <th width="28%" align="left">Server</th>
+            <th width="30%" align="left">URL</th>
+            <th width="25%" align="center">Options</th>
+          </tr>
+        </thead>
+          
+        <tbody>
+          {% for server in servers %}
+            
+            <tr class="active">
+              <td scope="row" width="7%" align="left">{{ loop.index }}</td>
+  
+              {% if server.statename == "RUNNING" %}
+                <td width="10%" align="left" style="color:green;">{{ server.statename }}</td>
+              {% else %}
+                <td width="10%" align="left" style="color:red;">{{ server.statename }}</td>
+              {% endif %}
+  
+              <td width="28%" align="left">
+              
+                <form id="server_items_{{ server.id }}" method="post" action="{{ url_for('show_server_items') }}">
+                  
+                  <input type="hidden" name="server" value="{{ server }}">
+  
+                  <a href="#" onclick="document.getElementById('server_items_{{ server.id }}').submit()">
+                    {{ server.server_name }}
+                  </a>
+                  
+                </form>
+              
+              </td>
+              
+              <td width="30%" align="left">
+                <a href="http://{{ server.server_ip }}:{{ server.server_port }}"
+                   target="_blank">
+                  {{ server.server_ip }}:{{ server.server_port }}
+                </a>
+              </td>
+              
+              <td width="25%" align="center">
+              
+                <form id="{{ server.id }}" method="post">
+                
+                  <input type="hidden" name="id" value="{{ server.id }}">
+                  <button id="alter_{{ server.id }}" type="button"
+                          class="btn btn-sm btn-success"
+                          onclick="handleEntry('{{ server.id }}', 'alter')">
+                          &nbsp;alter&nbsp;
+                  </button>
+                  <button id="delete_{{ server.id }}" type="button"
+                          class="btn btn-sm btn-danger after-btn"
+                          onclick="handleEntry('{{ server.id }}', 'delete')">
+                          delete
+                  </button>
+                  
+                </form>
+                
+              </td>
+              
+            </tr>
+            
+          {% endfor %}
+        </tbody>
+      </table>
+        
+    {% else %}
+      <p>No server here so far</p>
+    {% endif %}
+  
+  {% endif %}
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="text/javascript">
+
+function handleEntry(form_id, act) {
+    
+    document.getElementById(act + "_" + form_id).blur();
+    
+    var form_obj = document.getElementById(form_id);
+    var isconfirmed = window.confirm("do you really want to " + act + " entry " + form_id);
+    
+    if (isconfirmed == true) {
+        
+        if (act == "delete") {
+            
+            form_obj.action="{{ url_for('delete_server') }}";
+            form_obj.submit();
+            
+        } else if (act == "alter") {
+            
+            form_obj.action="{{ url_for('show_alter_server') }}";
+            form_obj.submit();
+        }
+    }
+}
+
+</script>
+
+{% endblock %}

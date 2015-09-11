@@ -8,11 +8,11 @@ create table users (
 
 insert into users (username, password) values ("admin", "123");
 
-create table hosts (
+create table servers (
   id integer primary key autoincrement,
-  host_ip text not null,
-  host_port text not null,
-  host_name text,
+  server_ip text not null,
+  server_port text not null,
+  server_name text,
   auth_user text,
   auth_pwd	text
 );

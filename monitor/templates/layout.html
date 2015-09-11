@@ -35,7 +35,7 @@
 
       </button>
 
-      <a class="navbar-brand" href="#">SV Monitor</a>
+      <a class="navbar-brand">SV Monitor</a>
 
     </div>
 
@@ -46,8 +46,8 @@
       <ul class="nav navbar-nav">
 
         {% for link in [{"title": "Home", "url": "/"},
-                        {"title": "Hosts", "url": "/show_hosts"},
-                        {"title": "Itmes", "url": "/show_items"},
+                        {"title": "Servers", "url": "/show_servers"},
+                        {"title": "Items", "url": "#"},
                         {"title": "Help", "url": "#"}]
         %}
         
@@ -84,9 +84,9 @@
           </p>
 
           <a class="btn btn-primary navbar-btn" role="button"
-             href="{{ url_for('add_host') }}">add host
+             href="{{ url_for('add_server') }}">Add Server
           </a>
-          <a class="btn btn-success navbar-btn" role="button"
+          <a class="btn btn-success navbar-btn after-btn" role="button"
              href="{{ url_for('sign_out') }}">Sign out
           </a>
         
@@ -101,3 +101,37 @@
 </nav>
 
 {% endblock %}
+
+
+{% block content %}
+
+<div class="container-div">
+  
+  <div class="page-header">
+      <h2>{% block content_header %}Header{% endblock %}</h2>
+  </div>
+  
+  {% if alert %}
+    <div class="alert alert-{{ alert.type|lower }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      
+      <strong>{{ alert.level|title }}: </strong> {{ alert.msg }}
+    </div>
+  {% endif %}
+  
+  {% if not session.username and self.title() != "Sign In" %}
+    <p>
+        Please <a href="{{ url_for('sign_in') }}"><strong>Sign in</strong></a>
+    </p>
+  {% endif %}
+  
+  {% block content_body %}
+  {% endblock %}
+
+</div>
+
+{% endblock %}
+
+
