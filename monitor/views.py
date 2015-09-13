@@ -223,6 +223,9 @@ def show_servers():
     
     error = None
     
+    if not session.get('username'):
+        return render_template('show_servers.html')
+    
     try:
         
         result = g.db.query_table("servers")
@@ -254,20 +257,22 @@ def show_server_items():
     
     error = None
     
-    try:
+    if session.get('username'):
     
-        if request.method == "POST":
-            
-            server = eval(request.form["server"])
-            
-            items = RPCServer(server).get_all_process_info()
-    
-            return render_template('show_server_items.html', server=server, items=items)
+        try:
         
-    except Exception, e:
+            if request.method == "POST":
+                
+                server = eval(request.form["server"])
+                
+                items = RPCServer(server).get_all_process_info()
         
-        error = "Exception"
-        print traceback.format_exc()
+                return render_template('show_server_items.html', server=server, items=items)
+            
+        except Exception, e:
+            
+            error = "Exception"
+            print traceback.format_exc()
     
     return render_template('show_servers.html')
 
