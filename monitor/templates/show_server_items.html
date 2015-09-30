@@ -5,6 +5,49 @@
 
 {% block content_header %}Items{% endblock %}
 
+
+{% block content_alert %}
+
+  {% if alert and alert.type == "success" %}
+    <div class="alert alert-{{ alert.type|lower }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      
+      <form id="server_items_{{ server.id }}" method="post" action="{{ url_for('show_server_items') }}">
+        
+        <input type="hidden" name="server" value="{{ server }}">
+        
+        <strong>{{ alert.level|title }}: </strong> {{ alert.msg|title }}&nbsp;
+        
+        <a class="alert-link" href="#"
+           onclick="document.getElementById('server_items_{{ server.id }}').submit()">Click Here
+        </a>
+        &nbsp;to update status if it does not change
+      </form>
+      
+    </div>
+    
+  {% else %}
+    {{super()}}
+    
+    <div style="margin:10px 0px;">
+      <form id="refresh_items" method="post" action="{{ url_for('show_server_items') }}">
+      
+        <input type="hidden" name="server" value="{{ server }}">
+
+        To update the status of items
+        <strong>
+          <a href="#" onclick="document.getElementById('refresh_items').submit()">Refresh Manually</a>
+        </strong>
+      </form>
+    </div>
+  
+  {% endif %}
+  
+{% endblock %}
+
+
 {% block content_body %}
 
   {% if session.username %}
@@ -62,7 +105,7 @@
             
         </table>
         
-    {% else %}
+    {% elif not alert %}
         <p>No items here so far</p>
     
     {% endif %}

@@ -9,6 +9,36 @@ Created on 2015-09-09
 import re
 import socket
 import xmlrpclib
+import httplib
+
+
+class TimeoutTransport(xmlrpclib.Transport):
+
+
+    def __init__(self, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, use_datetime=0):
+        
+        xmlrpclib.Transport.__init__(self, use_datetime)
+        self._timeout = timeout
+
+
+    def make_connection(self, host):
+        
+        # If using python 2.6, since that implementation normally returns the 
+        # HTTP compatibility class, which doesn't have a timeout feature.
+        #import httplib
+        #host, extra_headers, x509 = self.get_host_info(host)
+        #return httplib.HTTPConnection(host, timeout=self._timeout)
+
+        self._conn = xmlrpclib.Transport.make_connection(self, host)
+        self._conn.timeout = self._timeout
+        return self._conn
+    
+    def set_timeout(self, timeout=0.5):
+        
+        self._timeout = timeout
+        self._conn.timeout = timeout
+
+
 
 class RPCServer():
     '''
@@ -16,7 +46,7 @@ class RPCServer():
     '''
 
 
-    def __init__(self, server):
+    def __init__(self, server, timeout=0.5):
         '''
         Constructor
         '''
@@ -31,8 +61,9 @@ class RPCServer():
             self.rpc_url = "http://%s:%s@%s:%s" %(auth_user, auth_pwd, server_ip, server_port)
         else:
             self.rpc_url = "http://%s:%s" %(server_ip, server_port)
-            
-        self.server = xmlrpclib.Server(self.rpc_url)
+        
+        self._transport = TimeoutTransport(timeout)
+        self.server = xmlrpclib.Server(self.rpc_url, transport=self._transport)
         
         
 #         if re.match("^\d+\.\d+\.\d+\.\d+$", server_ip):

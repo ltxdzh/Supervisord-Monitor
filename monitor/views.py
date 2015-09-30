@@ -6,6 +6,7 @@ Created on 2015-09-09
 @author: zeng
 '''
 
+import socket
 import traceback
 import xmlrpclib
 from monitor import app
@@ -235,18 +236,26 @@ def show_servers():
                       server_port=row[2],
                       server_name=row[3] or row[1],
                       auth_user=row[4],
-                      auth_pwd=row[5]) for row in result]
+                      auth_pwd=row[5]) for row in result]#statename=row[6]
                     
         for i in xrange(len(servers)):
             
-            rpcserver = RPCServer(servers[i])
-            servers[i].update(rpcserver.get_supervisord_state())
+            try:
+                rpcserver = RPCServer(servers[i])
+                servers[i].update(rpcserver.get_supervisord_state())
+            
+            except socket.timeout:
+                servers[i]["statename"] = "TIMEOUT"
+                
+            except Exception, e:
+                print traceback.format_exc()
+                print e
             
         return render_template('show_servers.html', servers=servers)
     
     except Exception, e:
         
-        print e
+        print traceback.format_exc()
         error = "SQL Error"
     
     return render_template('index.html')
@@ -265,16 +274,25 @@ def show_server_items():
                 
                 server = eval(request.form["server"])
                 
-                items = RPCServer(server).get_all_process_info()
+                items = RPCServer(server, timeout=1).get_all_process_info()
         
                 return render_template('show_server_items.html', server=server, items=items)
+        
+        except socket.timeout:
             
+            alert = {"type": "danger",
+                     "level": "error",
+                     "msg": 'Time out connecting to server %s' %server["server_name"]}
+            
+            return render_template('show_server_items.html', server=server, items=[], alert = alert)
+
         except Exception, e:
             
             error = "Exception"
             print traceback.format_exc()
     
-    return render_template('show_servers.html')
+    return redirect(url_for('show_servers'))
+
 
 @app.route("/contorl_item", methods=['POST'])
 def contorl_item():
@@ -286,19 +304,32 @@ def contorl_item():
         control = request.form["control"]
         
         if control == "start":
-            RPCServer(server).start_process(name, wait=True)
+            RPCServer(server, timeout=1).start_process(name, wait=True)
         elif control == "stop":
-            RPCServer(server).stop_process(name, wait=True)
+            RPCServer(server, timeout=1).stop_process(name, wait=True)
         else:
             return
         
-        items = RPCServer(server).get_all_process_info()
+        items = RPCServer(server, timeout=1).get_all_process_info()
     
         return render_template('show_server_items.html', server=server, items=items)
+    
+    except socket.timeout:
+
+        alert = {"type": "success",
+                 "level": "success",
+                 "msg": "Successed %s process %s." %(control, name)}
+        
+        items = RPCServer(server).get_all_process_info()
+        return render_template('show_server_items.html', server=server, items=items, alert = alert)
         
     except Exception, e:
         
         print e
-        error = "Exception"
     
-    return
+    
+    alert = {"type": "danger",
+             "level": "error",
+             "msg": "%s process %s on server %s get %s" %(control, name, server["server_name"], str(e))}
+    
+    return render_template('show_server_items.html', server=server, items=[], alert = alert)

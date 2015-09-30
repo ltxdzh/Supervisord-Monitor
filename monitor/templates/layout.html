@@ -111,15 +111,17 @@
       <h2>{% block content_header %}Header{% endblock %}</h2>
   </div>
   
+  {% block content_alert %}
   {% if alert %}
     <div class="alert alert-{{ alert.type|lower }} alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
       
-      <strong>{{ alert.level|title }}: </strong> {{ alert.msg }}
+      <strong>{{ alert.level|title }}: </strong> {{ alert.msg|title }}
     </div>
   {% endif %}
+  {% endblock %}
   
   {% if not session.username and self.title() != "Sign In" %}
     <p>

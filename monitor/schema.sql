@@ -14,5 +14,6 @@ create table servers (
   server_port text not null,
   server_name text,
   auth_user text,
-  auth_pwd	text
+  auth_pwd	text,
+  server_state text
 );
